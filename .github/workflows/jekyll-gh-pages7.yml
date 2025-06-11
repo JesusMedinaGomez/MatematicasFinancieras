@@ -1,13 +1,9 @@
-name: deploy-book
+name: Deploy Jupyter Book to GitHub Pages
 
 on:
   push:
     branches:
-      - main
-      - master
-    # Puedes activar esto si tu libro está en un subdirectorio específico:
-    # paths:
-    #   - some-subfolder/**
+      - main  # o cambia por "master" si esa es tu rama principal
 
 permissions:
   contents: read
@@ -17,8 +13,9 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout repo
+      - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Setup Python
@@ -28,20 +25,14 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install -r requirements.txt
+          pip install jupyter-book
 
-      - name: Cache executed notebooks
-        uses: actions/cache@v3
-        with:
-          path: _build/.jupyter_cache
-          key: jupyter-book-cache-${{ hashFiles('requirements.txt') }}
-
-      - name: Build Jupyter Book
+      - name: Build the Jupyter Book
         run: |
           jupyter-book build .
 
       - name: Upload GitHub Pages artifact
-        uses: actions/upload-pages-artifact@v4
+        uses: actions/upload-pages-artifact@v1
         with:
           path: _build/html
 
